@@ -3,6 +3,8 @@ import { Toast, Dialog } from 'vant'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 
+Toast.allowMultiple()
+
 // 创建一个 axios 实例
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base api url + request url
@@ -39,7 +41,7 @@ service.interceptors.response.use(
       Toast({
         message: res.message || '操作失败',
         icon: 'close',
-        duration: 5000
+        duration: 2000
       })
 
       // token无效或失效 异地登录
@@ -66,7 +68,7 @@ service.interceptors.response.use(
     Toast({
       message: error.message,
       icon: 'fail',
-      duration: 5000
+      duration: 2000
     })
     return Promise.reject(error)
   }

@@ -33,7 +33,7 @@
 
           </van-col>
           <van-col span="12">
-            <van-button type="default" block @click="goRegister">注册</van-button>
+            <van-button type="default" native-type="button" block @click="goRegister">注册</van-button>
           </van-col>
         </van-row>
       </van-form>
