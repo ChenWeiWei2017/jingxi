@@ -23,7 +23,7 @@
       </template>
     </van-nav-bar>
     <div>
-      <vant-sidebar-scroll v-model="activeKey" :types="types" />
+      <vant-sidebar-scroll :active="activeKey" :types="types" @change="changeType" />
       <!-- <van-sidebar v-model="activeKey">
         <template v-for="type in types">
           <van-sidebar-item :key="type.index" :title="type.title" />
@@ -35,7 +35,7 @@
 
 <script>
 import { NavBar, Search, Sidebar, SidebarItem, Icon, List } from 'vant'
-import { VantSidebarScroll } from '@/components/VantSidebarScroll/index'
+import VantSidebarScroll from '@/components/VantSidebarScroll/index'
 
 export default {
   name: 'Type',
@@ -46,7 +46,7 @@ export default {
     [Icon.name]: Icon,
     [SidebarItem.name]: SidebarItem,
     [List.name]: List,
-    VantSidebarScroll: VantSidebarScroll
+    VantSidebarScroll
   },
   data() {
     return {
@@ -138,6 +138,11 @@ export default {
     },
     onClickRight() {
 
+    },
+    changeType(key) {
+      if (key !== this.activeKey) {
+        this.activeKey = key
+      }
     }
   }
 }
