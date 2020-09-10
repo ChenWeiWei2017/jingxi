@@ -65,7 +65,8 @@ export default {
   },
   data() {
     return {
-      banners: []
+      banners: [],
+      userInfo: null
     }
   },
   created() {

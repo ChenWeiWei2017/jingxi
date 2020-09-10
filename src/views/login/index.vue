@@ -74,7 +74,7 @@ export default {
       })
       this.$store.dispatch('user/login', values)
         .then(() => {
-          this.$router.push({ path: '/' })
+          this.$router.replace({ path: '/' })
           loading.clear()
         }).catch(() => {
           loading.clear()

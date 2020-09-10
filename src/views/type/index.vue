@@ -1,40 +1,52 @@
 <template>
   <div>
+    <van-nav-bar
+      right-text="按钮"
+      :fixed="true"
+      :placeholder="true"
+      left-arrow
+      class="nav-search"
+      @click-left="onClickLeft"
+      @click-right="onClickRight"
+    >
+      <template #title>
+        <van-search
+          v-model="value"
+          shape="round"
+          placeholder="请输入搜索关键词"
+          clearable
+          @search="onSearch"
+        />
+      </template>
+      <template #right>
+        <van-icon name="ellipsis" size="20" />
+      </template>
+    </van-nav-bar>
     <div>
-      <van-search
-        v-model="value"
-        shape="round"
-        placeholder="请输入搜索关键词"
-        clearable
-        @search="onSearch"
-      />
-    </div>
-    <div style="margin-top: 55px">
-      <div class="left">
-        <van-sidebar v-model="activeKey">
-          <template v-for="type in types">
-            <van-sidebar-item :key="type.index" :title="type.title" />
-          </template>
-        </van-sidebar>
-      </div>
-      <div class="right">
-        123
-      </div>
-      <div class="clear" />
+      <vant-sidebar-scroll v-model="activeKey" :types="types" />
+      <!-- <van-sidebar v-model="activeKey">
+        <template v-for="type in types">
+          <van-sidebar-item :key="type.index" :title="type.title" />
+        </template>
+      </van-sidebar> -->
     </div>
   </div>
 </template>
 
 <script>
-import { Search, Sidebar, SidebarItem, Icon } from 'vant'
+import { NavBar, Search, Sidebar, SidebarItem, Icon, List } from 'vant'
+import { VantSidebarScroll } from '@/components/VantSidebarScroll/index'
 
 export default {
   name: 'Type',
   components: {
+    [NavBar.name]: NavBar,
     [Search.name]: Search,
     [Sidebar.name]: Sidebar,
     [Icon.name]: Icon,
-    [SidebarItem.name]: SidebarItem
+    [SidebarItem.name]: SidebarItem,
+    [List.name]: List,
+    VantSidebarScroll: VantSidebarScroll
   },
   data() {
     return {
@@ -80,6 +92,36 @@ export default {
           index: 7,
           title: '汽车生活',
           to: ''
+        },
+        {
+          index: 8,
+          title: '男装',
+          to: ''
+        },
+        {
+          index: 9,
+          title: '男鞋',
+          to: ''
+        },
+        {
+          index: 10,
+          title: '女装',
+          to: ''
+        },
+        {
+          index: 11,
+          title: '女鞋',
+          to: ''
+        },
+        {
+          index: 12,
+          title: '图书音像',
+          to: ''
+        },
+        {
+          index: 13,
+          title: '零食',
+          to: ''
         }
       ]
     }
@@ -90,19 +132,22 @@ export default {
     },
     onCancel() {
 
+    },
+    onClickLeft() {
+
+    },
+    onClickRight() {
+
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .van-search {
-    border-bottom: 1px #eee solid;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1;
+  .nav-search{
+    .van-search {
+      padding: 5px;
+    }
   }
   .left {
     float: left;
@@ -112,5 +157,14 @@ export default {
   }
   .clear {
     clear: both;
+  }
+</style>
+
+<style lang="scss">
+  .nav-search {
+    .van-nav-bar__title {
+      width: 75%;
+      max-width: 75%;
+    }
   }
 </style>
