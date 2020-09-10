@@ -24,7 +24,30 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    component: Layout
+    component: Layout,
+    redirect: '/home',
+    children: [
+      {
+        path: 'home',
+        name: 'home',
+        component: () => import('@/views/home/index')
+      },
+      {
+        path: 'type',
+        name: 'type',
+        component: () => import('@/views/type/index')
+      },
+      {
+        path: 'shopping-cart',
+        name: 'shopping-cart',
+        component: () => import('@/views/shopping-cart/index')
+      },
+      {
+        path: 'mine',
+        name: 'mine',
+        component: () => import('@/views/mine/index')
+      }
+    ]
   },
   {
     path: '/redirect',

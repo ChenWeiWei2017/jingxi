@@ -2,7 +2,6 @@
 'use strict'
 // nodejs 的 path 模块
 const path = require('path')
-const bodyParser = require('body-parser')
 
 /**
  * 获取目录的绝对路径
@@ -40,49 +39,7 @@ module.exports = {
       errors: true
     },
     // before: require('./mock/mock-server.js') mock注入
-    before(app) {
-      app.use(bodyParser.json())
-      const userpool = [
-        { username: 'chenweiwei', password: '123456' },
-        { username: 'xiaod', password: 'root' }
-      ]
-      // 模拟注册接口
-      app.post('/api/v1/register', (req, res) => {
-        const { username } = req.body
-        const isExist = userpool.some(v => v.username === username)
-        if (isExist) {
-          res.json({
-            code: 40003,
-            message: '用户已存在'
-          })
-        } else {
-          res.json({
-            code: 200,
-            message: '注册成功'
-          })
-        }
-      })
-      // 模拟登陆接口
-      const tokenKey = 'xdclass'
-      app.post('/api/v1/login', (req, res) => {
-        // post请求，参数在body中
-        const { username, password } = req.body
-        const success = userpool.some(u => u.username === username && u.password === password)
-        if (success) {
-          res.json({
-            code: 200,
-            message: '登陆成功',
-            // 模拟token生成
-            token: tokenKey + '-' + username + '-' + (new Date().getTime() + 60 * 60 * 1000)
-          })
-        } else {
-          res.json({
-            code: 40000,
-            message: '账户名或密码错误'
-          })
-        }
-      })
-    }
+    before: require('./mock')
   },
   // webpack的配置放在此处
   configureWebpack: {

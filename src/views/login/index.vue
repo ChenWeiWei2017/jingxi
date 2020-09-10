@@ -33,7 +33,7 @@
 
           </van-col>
           <van-col span="12">
-            <van-button type="default" block @click="goRegister">注册</van-button>
+            <van-button type="default" native-type="button" block @click="goRegister">注册</van-button>
           </van-col>
         </van-row>
       </van-form>
@@ -74,7 +74,7 @@ export default {
       })
       this.$store.dispatch('user/login', values)
         .then(() => {
-          this.$router.push({ path: '/' })
+          this.$router.replace({ path: '/' })
           loading.clear()
         }).catch(() => {
           loading.clear()
