@@ -74,7 +74,12 @@ export default {
       })
       this.$store.dispatch('user/login', values)
         .then(() => {
-          this.$router.replace({ path: '/' })
+          const { redirect } = this.$route.query
+          if (redirect != null && redirect.trim() !== '') {
+            this.$router.replace({ path: redirect })
+          } else {
+            this.$router.replace({ path: '/' })
+          }
           loading.clear()
         }).catch(() => {
           loading.clear()

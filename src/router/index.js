@@ -2,6 +2,12 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Layout from '@/layout'
 
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location, onResolve, onReject) {
+  if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
+  return originalPush.call(this, location).catch(err => err)
+}
+
 Vue.use(VueRouter)
 
 // const routes = [
@@ -30,21 +36,35 @@ const routes = [
       {
         path: 'home',
         name: 'home',
+        meta: {
+          title: '京西首页'
+        },
         component: () => import('@/views/home/index')
       },
       {
         path: 'type',
         name: 'type',
+        meta: {
+          title: '京西商品分类'
+        },
         component: () => import('@/views/type/index')
       },
       {
         path: 'shopping-cart',
         name: 'shopping-cart',
+        meta: {
+          requireAuth: true,
+          title: '购物车'
+        },
         component: () => import('@/views/shopping-cart/index')
       },
       {
         path: 'mine',
         name: 'mine',
+        meta: {
+          requireAuth: true,
+          title: '个人中心'
+        },
         component: () => import('@/views/mine/index')
       }
     ]
@@ -62,11 +82,17 @@ const routes = [
   {
     path: '/login',
     name: 'login',
+    meta: {
+      title: '登录'
+    },
     component: () => import('@/views/login')
   },
   {
     path: '/register',
     name: 'register',
+    meta: {
+      title: '注册'
+    },
     component: () => import('@/views/register')
   }
 ]

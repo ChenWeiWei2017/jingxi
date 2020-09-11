@@ -24,26 +24,31 @@
     </van-nav-bar>
     <div class="panel-box">
       <div class="left-panel">
-        <van-sidebar v-model="activeKey">
-          <template v-for="type in types">
-            <van-sidebar-item :key="type.index" :title="type.title" />
-          </template>
-        </van-sidebar>
+        <cube-scroll ref="leftScroll">
+          <van-sidebar v-model="activeKey" @change="changeType">
+            <template v-for="type in types">
+              <van-sidebar-item :key="type.index" :title="type.title" />
+            </template>
+          </van-sidebar>
+        </cube-scroll>
       </div>
 
       <div ref="typeRight" class="right-panel">
-        123
-        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-        456
-        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-        789
+        <cube-scroll>
+          <div>
+            <h4>热门分类</h4>
+            <van-grid :column-num="3" :gutter="5" clickable square>
+              <van-grid-item v-for="item in 51" :key="item" icon="photo-o" text="文字" to="" />
+            </van-grid>
+          </div>
+        </cube-scroll>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { NavBar, Search, Sidebar, SidebarItem, Icon, List } from 'vant'
+import { NavBar, Search, Sidebar, SidebarItem, Icon, List, Grid, GridItem } from 'vant'
 
 export default {
   name: 'Type',
@@ -53,12 +58,16 @@ export default {
     [Sidebar.name]: Sidebar,
     [Icon.name]: Icon,
     [SidebarItem.name]: SidebarItem,
-    [List.name]: List
+    [List.name]: List,
+    [Grid.name]: Grid,
+    [GridItem.name]: GridItem
   },
   data() {
     return {
       value: '',
       activeKey: 0,
+      typeItemHeight: 0,
+      panelHeight: 0,
       types: [
         {
           index: 0,
@@ -130,11 +139,13 @@ export default {
           title: '零食',
           to: ''
         }
-      ]
+      ],
+      typeItem: ''
     }
   },
   mounted() {
     this.setPanelHeight()
+    this.countTypeItemHeight()
   },
   methods: {
     onSearch(val) {
@@ -153,8 +164,18 @@ export default {
       const tabbarHeight = document.querySelector('.van-tabbar').offsetHeight
       const navbarHeight = document.querySelector('.van-nav-bar').offsetHeight
       const clientHeight = document.documentElement.clientHeight
-      document.querySelector('.left-panel').style.height = (clientHeight - tabbarHeight - navbarHeight) + 'px'
-      document.querySelector('.right-panel').style.height = (clientHeight - tabbarHeight - navbarHeight) + 'px'
+      this.panelHeight = clientHeight - tabbarHeight - navbarHeight
+      document.querySelector('.left-panel').style.height = this.panelHeight + 'px'
+      document.querySelector('.right-panel').style.height = this.panelHeight + 'px'
+    },
+    countTypeItemHeight() {
+      const itemHeight = document.querySelector('.van-sidebar-item').offsetHeight
+      this.typeItemHeight = itemHeight
+    },
+    changeType(index) {
+      if ((this.types.length - index + 1) * 59 > this.panelHeight) {
+        this.$refs.leftScroll.scrollTo(0, -index * this.typeItemHeight, 500)
+      }
     }
   }
 }
@@ -184,6 +205,15 @@ export default {
       width: 75%;
       overflow: auto;
       background-color: #fff;
+
+      h4 {
+        font-size: 14px;
+        color: #333;
+        line-height: 1em;
+        font-weight: 700;
+        text-align: left;
+        margin: 20px 0 10px 6px;
+      }
     }
   }
 </style>

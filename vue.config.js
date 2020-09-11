@@ -19,18 +19,20 @@ const port = process.env.port || process.env.npm_config_port || 8081
 const name = '京西'
 
 module.exports = {
-
   /*
    * 如果该项目是某个网站下的子项目，则这里要配置成子项目名的路径
    * 比如这个子项目是 https://foo.github.io/bar/，那publicPath应该设置为 '/bar/'
    * 在其他大多数情况下，都是直接设置成 '/' 的
    */
   publicPath: '/',
+
   outputDir: 'dist',
   assetsDir: 'static',
   lintOnSave: process.env.NODE_DEV === 'development',
+
   // 去除打包后最终打包文件中的map文件
   productionSourceMap: false,
+
   devServer: {
     port: port,
     open: true,
@@ -41,6 +43,7 @@ module.exports = {
     // before: require('./mock/mock-server.js') mock注入
     before: require('./mock')
   },
+
   // webpack的配置放在此处
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
@@ -53,6 +56,7 @@ module.exports = {
       }
     }
   },
+
   // webpack内部配置
   // 定义具名的 loader 规则和具名插件，并有机会在后期进入这些规则并对它们的选项进行修改
   chainWebpack(config) {
@@ -114,5 +118,21 @@ module.exports = {
           config.optimization.runtimeChunk('single')
         }
       )
+  },
+
+  css: {
+    loaderOptions: {
+      stylus: {
+        'resolve url': true,
+        'import': []
+      }
+    }
+  },
+
+  pluginOptions: {
+    'cube-ui': {
+      postCompile: true,
+      theme: false
+    }
   }
 }
