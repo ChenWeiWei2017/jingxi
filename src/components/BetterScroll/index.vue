@@ -89,6 +89,9 @@ export default {
       this._initScroll()
     }, 20)
   },
+  beforeDestroy() {
+    this.scroll.destroy()
+  },
   methods: {
     _initScroll() {
       if (!this.$refs.wrapper) {

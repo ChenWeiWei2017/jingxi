@@ -22,20 +22,28 @@
         <van-icon name="ellipsis" size="20" />
       </template>
     </van-nav-bar>
-    <div>
-      <vant-sidebar-scroll :active="activeKey" :types="types" @change="changeType" />
-      <!-- <van-sidebar v-model="activeKey">
-        <template v-for="type in types">
-          <van-sidebar-item :key="type.index" :title="type.title" />
-        </template>
-      </van-sidebar> -->
+    <div class="panel-box">
+      <div class="left-panel">
+        <van-sidebar v-model="activeKey">
+          <template v-for="type in types">
+            <van-sidebar-item :key="type.index" :title="type.title" />
+          </template>
+        </van-sidebar>
+      </div>
+
+      <div ref="typeRight" class="right-panel">
+        123
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+        456
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+        789
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { NavBar, Search, Sidebar, SidebarItem, Icon, List } from 'vant'
-import VantSidebarScroll from '@/components/VantSidebarScroll/index'
 
 export default {
   name: 'Type',
@@ -45,8 +53,7 @@ export default {
     [Sidebar.name]: Sidebar,
     [Icon.name]: Icon,
     [SidebarItem.name]: SidebarItem,
-    [List.name]: List,
-    VantSidebarScroll
+    [List.name]: List
   },
   data() {
     return {
@@ -126,6 +133,9 @@ export default {
       ]
     }
   },
+  mounted() {
+    this.setPanelHeight()
+  },
   methods: {
     onSearch(val) {
       console.log(val)
@@ -139,10 +149,12 @@ export default {
     onClickRight() {
 
     },
-    changeType(key) {
-      if (key !== this.activeKey) {
-        this.activeKey = key
-      }
+    setPanelHeight() {
+      const tabbarHeight = document.querySelector('.van-tabbar').offsetHeight
+      const navbarHeight = document.querySelector('.van-nav-bar').offsetHeight
+      const clientHeight = document.documentElement.clientHeight
+      document.querySelector('.left-panel').style.height = (clientHeight - tabbarHeight - navbarHeight) + 'px'
+      document.querySelector('.right-panel').style.height = (clientHeight - tabbarHeight - navbarHeight) + 'px'
     }
   }
 }
@@ -154,14 +166,25 @@ export default {
       padding: 5px;
     }
   }
-  .left {
-    float: left;
-  }
-  .right {
-    float: left;
-  }
-  .clear {
-    clear: both;
+
+  .panel-box {
+    display: flex;
+
+    .left-panel {
+      width: 25%;
+      margin-right: 1px;
+
+      .van-sidebar {
+        height: 100%;
+        width: 100%;
+      }
+    }
+
+    .right-panel {
+      width: 75%;
+      overflow: auto;
+      background-color: #fff;
+    }
   }
 </style>
 

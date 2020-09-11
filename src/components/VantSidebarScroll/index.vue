@@ -1,12 +1,11 @@
 <template>
-  <div ref="wrapper">
-    <van-sidebar v-model="activeKey" @change="changeActive">
+  <van-sidebar v-model="activeKey" @change="changeActive">
+    <div ref="wrapper">
       <template v-for="type in types">
         <van-sidebar-item :key="type.index" :title="type.title" />
       </template>
-    </van-sidebar>
-  </div>
-
+    </div>
+  </van-sidebar>
 </template>
 
 <script>
@@ -124,6 +123,7 @@ export default {
       if (!this.$refs.wrapper) {
         return
       }
+      console.log(this.$refs.wrapper)
       // 初始化better-scroll
       this.scroll = new BScroll(this.$refs.wrapper, {
         probeType: this.probeType,
