@@ -22,3 +22,10 @@ export function register(data) {
     data
   })
 }
+
+export function getInfo() {
+  return request({
+    url: '/api/v1/userinfo',
+    method: 'get'
+  })
+}

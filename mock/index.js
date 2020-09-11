@@ -43,6 +43,26 @@ module.exports = app => {
     }
   })
 
+  app.get('/api/v1/userinfo', (req, res) => {
+    const token = req.headers['X-Token']
+    console.log(token)
+    if (token && token.trim() !== '') {
+      res.json({
+        code: 200,
+        message: 'success',
+        data: {
+          name: '陈伟伟',
+          avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
+        }
+      })
+    } else {
+      res.json({
+        code: -1,
+        message: '用户未登录'
+      })
+    }
+  })
+
   app.get('/api/v1/home/banners', (req, res) => {
     res.json({
       code: 200,
