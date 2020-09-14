@@ -67,23 +67,24 @@ export default {
     onClickLeft() {
       this.$router.go(-1)
     },
-    onSubmit(values) {
+    async onSubmit(values) {
       const loading = this.$toast.loading({
         message: '登录中...',
         forbidClick: true
       })
-      this.$store.dispatch('user/login', values)
-        .then(() => {
-          const { redirect } = this.$route.query
-          if (redirect != null && redirect.trim() !== '') {
-            this.$router.replace({ path: redirect })
-          } else {
-            this.$router.replace({ path: '/' })
-          }
-          loading.clear()
-        }).catch(() => {
-          loading.clear()
-        })
+      try {
+        await this.$store.dispatch('user/login', values)
+        await this.$store.dispatch('user/getInfo')
+        const { redirect } = this.$route.query
+        if (redirect != null && redirect.trim() !== '') {
+          this.$router.replace({ path: redirect })
+        } else {
+          this.$router.replace({ path: '/' })
+        }
+        loading.clear()
+      } catch (err) {
+        loading.clear()
+      }
     },
     goRegister() {
       this.$router.push({ name: 'register' })

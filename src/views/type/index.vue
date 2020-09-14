@@ -35,8 +35,7 @@
 
       <div ref="typeRight" class="right-panel">
         <cube-scroll>
-          <div>
-            <h4>热门分类</h4>
+          <div style="padding-top: 5px;">
             <van-grid :column-num="3" :gutter="5" clickable square>
               <van-grid-item v-for="item in 51" :key="item" icon="photo-o" text="文字" to="" />
             </van-grid>

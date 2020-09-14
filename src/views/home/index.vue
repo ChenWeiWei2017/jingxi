@@ -7,7 +7,12 @@
     >
       <template v-slot:left>
         <!-- <van-icon name="user-circle-o" color="#2f373df2" size=".7rem" /> -->
-        登录
+        <template v-if="showUserInfo()">
+          <van-image :src="userAvatar" :alt="username" round width=".8rem" />
+        </template>
+        <template v-else>
+          登录
+        </template>
       </template>
       <template v-slot:title>
         首页
@@ -48,6 +53,8 @@
 <script>
 import { NavBar, Icon, Search, Swipe, SwipeItem, Grid, GridItem, Lazyload, Image as VanImage, Loading } from 'vant'
 import { bannerList } from '@/api/home'
+import { mapGetters } from 'vuex'
+import { getToken } from '@/utils/auth'
 
 export default {
   name: 'Home',
@@ -69,14 +76,38 @@ export default {
       userInfo: null
     }
   },
+  computed: {
+    ...mapGetters([
+      'username',
+      'userAvatar'
+    ])
+  },
   created() {
     bannerList().then((data) => {
       this.banners = data.data.banners
     })
+    this.setUserInfo()
   },
   methods: {
     onClickLeft() {
-      this.$router.push({ name: 'login' })
+      if (this.showUserInfo()) {
+        this.$router.push({ name: 'mine' })
+      } else {
+        this.$router.push({ name: 'login' })
+      }
+    },
+    setUserInfo() {
+      if (!this.showUserInfo()) {
+        // 获取userInfo
+        const token = getToken()
+        if (token != null && token.trim().length > 0) {
+          // 用户登录过，从API请求用户信息
+          this.$store.dispatch('user/getInfo')
+        }
+      }
+    },
+    showUserInfo() {
+      return this.username != null && this.username.trim().length > 0
     }
   }
 }

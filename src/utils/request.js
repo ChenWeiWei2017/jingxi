@@ -16,7 +16,7 @@ service.interceptors.request.use(
   config => {
     if (store.getters.token) {
       // 设置token到请求头中，这里的token的key要与后端约定一致
-      config.headers['X-Token'] = getToken()
+      config.headers['xd-token'] = getToken()
     }
     return config
   },

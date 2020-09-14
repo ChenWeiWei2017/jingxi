@@ -1,13 +1,21 @@
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { login, logout } from '@/api/user'
+import { login, logout, getInfo } from '@/api/user'
 
 const state = {
-  token: getToken()
+  token: getToken(),
+  name: '',
+  avatar: ''
 }
 
 const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
+  },
+  SET_NAME: (state, name) => {
+    state.name = name
+  },
+  SET_AVATAR: (state, avatar) => {
+    state.avatar = avatar
   }
 }
 
@@ -17,8 +25,25 @@ const actions = {
     const { username, password } = loginData
     return new Promise((reslove, reject) => {
       login({ username: username.trim(), password }).then(data => {
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
+        commit('SET_TOKEN', data.data.token)
+        setToken(data.data.token)
+        reslove()
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+
+  getInfo({ commit }) {
+    return new Promise((reslove, reject) => {
+      getInfo().then(response => {
+        const { data } = response
+        if (!data) {
+          reject('身份验证失败，请重新登录')
+        }
+        const { name, avatar } = data
+        commit('SET_NAME', name)
+        commit('SET_AVATAR', avatar)
         reslove()
       }).catch(error => {
         reject(error)
