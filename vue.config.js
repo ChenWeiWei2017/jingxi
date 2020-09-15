@@ -80,14 +80,14 @@ module.exports = {
           // runtime.js的处理策略
           // 使 runtime 代码内联在 index.html 中
           // 下次变动哪个路由就只有被改动的路由 js 会改变，对其他路由 js 文件没有影响。
-          config
-            .plugin('ScriptExtHtmlWebpackPlugin')
-            .after('html')
-            .use('script-ext-html-webpack-plugin', [{
-            // `runtime` must same as runtimeChunk name. default is `runtime`
-              inline: /runtime\..*\.js$/
-            }])
-            .end()
+          // config
+          //   .plugin('ScriptExtHtmlWebpackPlugin')
+          //   .after('html')
+          //   .use('script-ext-html-webpack-plugin', [{
+          //   // `runtime` must same as runtimeChunk name. default is `runtime`
+          //     inline: /runtime\..*\.js$/
+          //   }])
+          //   .end()
           // chunks资源分块
           // 如果使用了某些长期不会改变的库，像 element-ui ，打包完成有 600 多 KB ，包含在默认 vendor 中显然不合适，每次用户都要加载这么大的文件体验不好，所以要单独打包：
           config
@@ -115,7 +115,7 @@ module.exports = {
               }
             })
           // runtime.js的处理策略，让runtime代码单独抽取打包
-          config.optimization.runtimeChunk('single')
+          // config.optimization.runtimeChunk('single')
         }
       )
   },
