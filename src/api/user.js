@@ -11,7 +11,7 @@ export function login(data) {
 export function logout() {
   return request({
     url: '/api/v1/logout',
-    method: 'post'
+    method: 'get'
   })
 }
 

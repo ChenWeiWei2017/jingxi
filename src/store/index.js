@@ -19,4 +19,10 @@ const store = new Vuex.Store({
   getters
 })
 
+store.subscribe((mutations, state) => {
+  if (mutations.type.startsWith('shopcart/')) {
+    localStorage.setItem('cart', JSON.stringify(state.shopcart.cart))
+  }
+})
+
 export default store

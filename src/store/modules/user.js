@@ -55,6 +55,8 @@ const actions = {
     return new Promise((reslove, reject) => {
       logout().then(() => {
         commit('SET_TOKEN', '')
+        commit('SET_NAME', '')
+        commit('SET_AVATAR', '')
         removeToken()
         reslove()
       }).catch(error => {

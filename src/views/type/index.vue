@@ -26,8 +26,8 @@
       <div class="left-panel">
         <cube-scroll ref="leftScroll">
           <van-sidebar v-model="activeKey" @change="changeType">
-            <template v-for="type in types">
-              <van-sidebar-item :key="type.index" :title="type.title" />
+            <template v-for="(type, index) in types">
+              <van-sidebar-item :key="index" :title="type.title" />
             </template>
           </van-sidebar>
         </cube-scroll>
@@ -36,18 +36,38 @@
       <div ref="typeRight" class="right-panel">
         <cube-scroll>
           <div style="padding-top: 5px;">
-            <van-grid :column-num="3" :gutter="5" clickable square>
-              <van-grid-item v-for="item in 51" :key="item" icon="photo-o" text="文字" to="" />
+            <van-grid :column-num="2" :gutter="5" clickable square>
+              <van-grid-item v-for="item in goods" :key="item.id" :text="item.title" @click="addtocart($event, item)">
+                <template #icon>
+                  <van-image :src="item.cover" width="80" />
+                </template>
+              </van-grid-item>
             </van-grid>
           </div>
         </cube-scroll>
+      </div>
+      <!-- 动画 -->
+      <div class="ball-wrap">
+        <transition
+          @before-enter="beforeEnter"
+          @enter="enter"
+          @afterEnter="afterEnter"
+        >
+          <div v-if="ball.show" class="ball">
+            <div class="inner">
+              <van-icon name="gift" size="16" />
+            </div>
+          </div>
+        </transition>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { NavBar, Search, Sidebar, SidebarItem, Icon, List, Grid, GridItem } from 'vant'
+import { NavBar, Search, Sidebar, SidebarItem, Icon, List, Grid, GridItem, Image as VanImage } from 'vant'
+import { getAllTypes, getGoodsByType } from '@/api/type'
+import { getToken } from '@/utils/auth'
 
 export default {
   name: 'Type',
@@ -59,92 +79,34 @@ export default {
     [SidebarItem.name]: SidebarItem,
     [List.name]: List,
     [Grid.name]: Grid,
-    [GridItem.name]: GridItem
+    [GridItem.name]: GridItem,
+    [VanImage.name]: VanImage
   },
   data() {
     return {
       value: '',
       activeKey: 0,
-      typeItemHeight: 0,
+      typeItemHeight: 59,
       panelHeight: 0,
-      types: [
-        {
-          index: 0,
-          title: '热门推荐',
-          to: '' // 路由
-        },
-        {
-          index: 1,
-          title: '手机数码',
-          to: '' // 路由
-        },
-        {
-          index: 2,
-          title: '电脑办公',
-          to: '' // 路由
-        },
-        {
-          index: 3,
-          title: '家用电器',
-          to: '' // 路由
-        },
-        {
-          index: 4,
-          title: '美妆护肤',
-          to: ''
-        },
-        {
-          index: 5,
-          title: '京西超市',
-          to: ''
-        },
-        {
-          index: 6,
-          title: '个护清洁',
-          to: ''
-        },
-        {
-          index: 7,
-          title: '汽车生活',
-          to: ''
-        },
-        {
-          index: 8,
-          title: '男装',
-          to: ''
-        },
-        {
-          index: 9,
-          title: '男鞋',
-          to: ''
-        },
-        {
-          index: 10,
-          title: '女装',
-          to: ''
-        },
-        {
-          index: 11,
-          title: '女鞋',
-          to: ''
-        },
-        {
-          index: 12,
-          title: '图书音像',
-          to: ''
-        },
-        {
-          index: 13,
-          title: '零食',
-          to: ''
-        }
-      ],
-      typeItem: ''
+      types: [],
+      typeItem: '',
+      goods: [],
+      ball: {
+        show: false,
+        el: ''
+      }
+    }
+  },
+  async created() {
+    const typeRes = await getAllTypes()
+    this.types = typeRes.data
+    if (this.types.length) {
+      const goodsRes = await getGoodsByType(this.types[this.activeKey].id)
+      this.goods = goodsRes.data
     }
   },
   mounted() {
     this.setPanelHeight()
-    this.countTypeItemHeight()
   },
   methods: {
     onSearch(val) {
@@ -167,14 +129,49 @@ export default {
       document.querySelector('.left-panel').style.height = this.panelHeight + 'px'
       document.querySelector('.right-panel').style.height = this.panelHeight + 'px'
     },
-    countTypeItemHeight() {
-      const itemHeight = document.querySelector('.van-sidebar-item').offsetHeight
-      this.typeItemHeight = itemHeight
-    },
     changeType(index) {
-      if ((this.types.length - index + 1) * 59 > this.panelHeight) {
+      if ((this.types.length - index + 1) * this.typeItemHeight > this.panelHeight) {
         this.$refs.leftScroll.scrollTo(0, -index * this.typeItemHeight, 500)
       }
+      getGoodsByType(this.types[index].id).then((res) => {
+        this.goods = res.data
+      })
+    },
+    addtocart(event, goods) {
+      const token = getToken()
+      if (token != null && token.trim() !== '') {
+        this.$store.dispatch('shopcart/addtocart', goods).then(() => {
+          this.ball.show = true
+          this.ball.el = event.target
+        })
+      } else {
+        this.$toast.fail('请先登录')
+      }
+    },
+    beforeEnter(el) {
+      const dom = this.ball.el
+      const rect = dom.getBoundingClientRect()
+      const x = (rect.left - window.innerWidth * 0.6)
+      const y = -(window.innerHeight - rect.top)
+      el.style.display = 'block'
+      el.style.transform = `translate3d(0,${y}px,0)`
+      const inner = el.querySelector('.inner')
+      inner.style.transform = `translate3d(${x}px,0,0)`
+    },
+    enter(el, done) {
+      // 触发重绘
+      document.body.offsetHeight
+      // 小球移动回到原点，就是购物车的位置
+      el.style.transform = `translate3d(0,0,0)`
+      const inner = el.querySelector('.inner')
+      inner.style.transform = `translate3d(0,0,0)`
+      // 过渡完成后执行的事件
+      el.addEventListener('transitionend', done)
+    },
+    afterEnter(el) {
+      // 结束隐藏小球
+      this.ball.show = false
+      el.style.display = 'none'
     }
   }
 }
@@ -212,6 +209,23 @@ export default {
         font-weight: 700;
         text-align: left;
         margin: 20px 0 10px 6px;
+      }
+    }
+  }
+
+  .ball-wrap {
+    .ball {
+      position: fixed;
+      left: 60%;
+      bottom: 40px;
+      z-index: 999;
+      color: red;
+      transition: all 1s cubic-bezier(0.49,-0.29,0.75,0.41);
+
+      .inner {
+        width: 16px;
+        height: 16px;
+        transition: all 1s linear
       }
     }
   }

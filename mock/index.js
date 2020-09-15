@@ -45,6 +45,13 @@ module.exports = app => {
     }
   })
 
+  app.get('/api/v1/logout', (req, res) => {
+    res.json({
+      code: 200,
+      message: 'success'
+    })
+  })
+
   app.get('/api/v1/userinfo', (req, res) => {
     const token = req.headers['xd-token']
     if (token && token.trim() !== '') {
@@ -100,7 +107,7 @@ module.exports = app => {
           title: '热门推荐'
         },
         {
-          id: 1,
+          id: 11,
           title: '手机数码'
         },
         {
@@ -156,8 +163,9 @@ module.exports = app => {
   })
 
   app.get('/api/v1/type/goods', (req, res) => {
-    const { typeId } = req.params
-    if (typeId === 0) {
+    const { typeId } = req.query
+    // eslint-disable-next-line eqeqeq
+    if (typeId == 0) {
       res.json({
         code: 200,
         message: 'success',

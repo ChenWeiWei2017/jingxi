@@ -14,7 +14,7 @@
       >
         <van-tabbar-item icon="home-o" to="/home">首页</van-tabbar-item>
         <van-tabbar-item icon="apps-o" to="/type">分类</van-tabbar-item>
-        <van-tabbar-item icon="shopping-cart-o" to="/shopping-cart">购物车</van-tabbar-item>
+        <van-tabbar-item icon="shopping-cart-o" to="/shopping-cart" :badge="cartnum">购物车</van-tabbar-item>
         <van-tabbar-item icon="user-o" to="/mine">我的</van-tabbar-item>
       </van-tabbar>
     </footer>
@@ -23,6 +23,7 @@
 
 <script>
 import { Tabbar, TabbarItem } from 'vant'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Layout',
@@ -36,6 +37,11 @@ export default {
       active: 0,
       searchValue: ''
     }
+  },
+  computed: {
+    ...mapGetters([
+      'cartnum'
+    ])
   },
   watch: {
     active: {
